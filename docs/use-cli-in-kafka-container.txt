@@ -1,0 +1,57 @@
+➜  ~ docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                NAMES
+d5512714b91f   wurstmeister/kafka       "start-kafka.sh"         28 minutes ago   Up 28 minutes   0.0.0.0:9092->9092/tcp                               kafka
+bd887f02aa01   wurstmeister/zookeeper   "/bin/sh -c '/usr/sb…"   28 minutes ago   Up 28 minutes   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   zookeeper
+➜  ~ docker exec -it d5512714b91f bash
+root@d5512714b91f:/# pwd
+/
+root@d5512714b91f:/# ls /bin
+bash   date	      echo     gzexe	 mkdir	     nc		    rbash      sleep	 true	       zcat    zless
+cat    dd	      egrep    gzip	 mknod	     nc.openbsd     readlink   stty	 umount        zcmp    zmore
+chgrp  df	      false    hostname  mktemp      netcat	    rm	       su	 uname	       zdiff   znew
+chmod  dir	      fgrep    ln	 more	     netstat	    rmdir      sync	 uncompress    zegrep
+chown  dmesg	      findmnt  login	 mount	     nisdomainname  run-parts  tar	 vdir	       zfgrep
+cp     dnsdomainname  grep     ls	 mountpoint  pidof	    sed        tempfile  wdctl	       zforce
+dash   domainname     gunzip   lsblk	 mv	     pwd	    sh	       touch	 ypdomainname  zgrep
+root@d5512714b91f:/# which kafka-topics.sh
+/opt/kafka/bin/kafka-topics.sh
+root@d5512714b91f:/#
+
+------------------------------------------------------------------------------------------------------------------
+
+Our Zookeeper: localhost:2181
+Our Kafka: localhost:9092
+
+/opt/kafka/bin/kafka-topics.sh --create --topic employees --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
+
+ERROR: ?? NO IT IS ACTUALLY LOGGED AS AN "INFO"
+kafka      | [2022-11-18 16:33:22,925] INFO Creating topic employees with configuration {} and initial partition assignment HashMap(0 -> ArrayBuffer(1002)) (kafka.zk.AdminZkClient)
+zookeeper  | 2022-11-18 16:33:22,980 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@653] - Got user-level KeeperException when processing sessionid:0x1002e9b07bc0000 type:setData cxid:0x38 zxid:0x35 txntype:-1 reqpath:n/a Error Path:/config/topics/employees Error:KeeperErrorCode = NoNode for /config/topics/employees
+kafka      | [2022-11-18 16:33:23,418] INFO [ReplicaFetcherManager on broker 1002] Removed fetcher for partitions Set(employees-0) (kafka.server.ReplicaFetcherManager)
+kafka      | [2022-11-18 16:33:24,026] INFO [Log partition=employees-0, dir=/kafka/kafka-logs-d5512714b91f] Loading producer state till offset 0 with message format version 2 (kafka.log.Log)
+kafka      | [2022-11-18 16:33:24,155] INFO Created log for partition employees-0 in /kafka/kafka-logs-d5512714b91f/employees-0 with properties {} (kafka.log.LogManager)
+kafka      | [2022-11-18 16:33:24,182] INFO [Partition employees-0 broker=1002] No checkpointed highwatermark is found for partition employees-0 (kafka.cluster.Partition)
+kafka      | [2022-11-18 16:33:24,189] INFO [Partition employees-0 broker=1002] Log loaded for partition employees-0 with initial high watermark 0 (kafka.cluster.Partition)
+----------------------------------------------------------------------------------------------------------------------
+INFO ON THIS:
+https://github.com/wurstmeister/kafka-docker/issues/427
+TOPIC MIGHT BE OK. I DONT SEE A REASON FOR ANY RACE CONDITION TO BE THE CAUSE HERE. WE HAVE STARTUP ORDER CONTROL AND
+ONLY ONE CONTAINER/NODE OF EACH .. I THINK. MAYBE THE CONTAINER HAS MULTI NODES?
+WAS ONLY ANY INFO LOG EVENT. IGNORING FOR NOW.
+----------------------------------------------------------------------------------------------------------------------
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-topics.sh --describe --topic employees --zookeeper zookeeper
+Topic: employees	TopicId: kpIoablAQyifPKN9_Wtclw	PartitionCount: 1	ReplicationFactor: 1	Configs:
+	Topic: employees	Partition: 0	Leader: 1002	Replicas: 1002	Isr: 1002
+root@d5512714b91f:/#
+
+KAFKA DID NOT LOG ANYTHING FOR THIS COMMAND, ONLY THE ZK CONTAINER LOGGED:
+
+zookeeper  | 2022-11-18 16:46:31,812 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxnFactory@215] - Accepted socket connection from /172.22.0.2:56432
+zookeeper  | 2022-11-18 16:46:31,825 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:ZooKeeperServer@949] - Client attempting to establish new session at /172.22.0.2:56432
+zookeeper  | 2022-11-18 16:46:31,829 [myid:] - INFO  [SyncThread:0:ZooKeeperServer@694] - Established session 0x1002e9b07bc0003 with negotiated timeout 30000 for client /172.22.0.2:56432
+zookeeper  | 2022-11-18 16:46:32,307 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@487] - Processed session termination for sessionid: 0x1002e9b07bc0003
+zookeeper  | 2022-11-18 16:46:32,310 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxn@1056] - Closed socket connection for client /172.22.0.2:56432 which had sessionid 0x1002e9b07bc0003
+
+----------------------------------------------------------------------------------------------------------------------
+

@@ -1,0 +1,15 @@
+
+Linux quick start
+https://kafka.apache.org/quickstart
+
+this repo
+https://github.com/jimmygizmo/kafkapoc
+git@github.com:jimmygizmo/kafkapoc.git
+
+kafka/docker
+https://towardsdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way-4ceb00817d8b
+
+
+
+
+
