@@ -1,3 +1,9 @@
+Some of this is from partially following:
+https://kafkaide.com/learn/how-to-start-using-apache-kafka-in-python/
+(but im using containers and I use the cmd line inside the kafka container itself. simplest way.)
+the above tut is more about the python clients and very basic usage.
+
+
 ➜  ~ docker ps
 CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                NAMES
 d5512714b91f   wurstmeister/kafka       "start-kafka.sh"         28 minutes ago   Up 28 minutes   0.0.0.0:9092->9092/tcp                               kafka
@@ -32,12 +38,15 @@ kafka      | [2022-11-18 16:33:24,026] INFO [Log partition=employees-0, dir=/kaf
 kafka      | [2022-11-18 16:33:24,155] INFO Created log for partition employees-0 in /kafka/kafka-logs-d5512714b91f/employees-0 with properties {} (kafka.log.LogManager)
 kafka      | [2022-11-18 16:33:24,182] INFO [Partition employees-0 broker=1002] No checkpointed highwatermark is found for partition employees-0 (kafka.cluster.Partition)
 kafka      | [2022-11-18 16:33:24,189] INFO [Partition employees-0 broker=1002] Log loaded for partition employees-0 with initial high watermark 0 (kafka.cluster.Partition)
+* CONCLUSION: SEEMS LIKE WHENEVER A NODE NEEDS TO BE CREATED, THIS WARNING WILL BE SEEN (ZK does call it a "Error:KeeperErrorCode = NoNode")
+But at this point I would not really call it an error from most perspectives. The semantics will become more clear soon.
 ----------------------------------------------------------------------------------------------------------------------
 INFO ON THIS:
 https://github.com/wurstmeister/kafka-docker/issues/427
 TOPIC MIGHT BE OK. I DONT SEE A REASON FOR ANY RACE CONDITION TO BE THE CAUSE HERE. WE HAVE STARTUP ORDER CONTROL AND
 ONLY ONE CONTAINER/NODE OF EACH .. I THINK. MAYBE THE CONTAINER HAS MULTI NODES?
-WAS ONLY ANY INFO LOG EVENT. IGNORING FOR NOW.
+WAS ONLY ANY INFO LOG EVENT. IGNORING FOR NOW. SEE ABOVE - I THINK THIS IS NORMAL AND NOT AN ERROR. HAPPENS
+WHEN A NEW NODE IS NEEDED AND THEN IT GETS CREATED. (Been a while since I used ZK.)
 ----------------------------------------------------------------------------------------------------------------------
 
 root@d5512714b91f:/# /opt/kafka/bin/kafka-topics.sh --describe --topic employees --zookeeper zookeeper
@@ -54,4 +63,103 @@ zookeeper  | 2022-11-18 16:46:32,307 [myid:] - INFO  [ProcessThread(sid:0 cport:
 zookeeper  | 2022-11-18 16:46:32,310 [myid:] - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxn@1056] - Closed socket connection for client /172.22.0.2:56432 which had sessionid 0x1002e9b07bc0003
 
 ----------------------------------------------------------------------------------------------------------------------
+
+root@d5512714b91f:/#
+root@d5512714b91f:/# /opt/kafka/bin//kafka-console-producer.sh --topic employees --bootstrap-server localhost:9092
+>
+>^Croot@d5512714b91f:/#
+root@d5512714b91f:/#
+root@d5512714b91f:/# /opt/kafka/bin//kafka-console-producer.sh --topic employees --bootstrap-server localhost:9092
+>Hi.
+>There.
+>This is message like number 4 or something. Maybe 5.
+>^Croot@d5512714b91f:/# /opt/kafka/bin//kafka-console-producer.sh --topic employees --bootstrap-server localhost:9092
+>more
+>root@d5512714b91f:/#
+NOTE: Ctrl-D seems to be a cleaner exit than Ctrl-C. Let's get the HELP fo this into a file.
+
+--------------------------------------------------------------------------------------------------------------------
+FROM ANOTHER TERMINAL:
+➜  ~ docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED       STATUS       PORTS                                                NAMES
+d5512714b91f   wurstmeister/kafka       "start-kafka.sh"         2 hours ago   Up 2 hours   0.0.0.0:9092->9092/tcp                               kafka
+bd887f02aa01   wurstmeister/zookeeper   "/bin/sh -c '/usr/sb…"   2 hours ago   Up 2 hours   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   zookeeper
+➜  ~ docker exec -it d5512714b91f bash
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-console-consumer.sh --topic employees --from-beginning --bootstrap-server localhost:9092
+
+* IT PRINTS ALL MESSAGES I CREATED AND THEN WITH ABOUT A 1 SECOND DELAY +/- IT PRINTS NEW MESSAGES FROM THE OTHER TERMINAL.
+
+---------------------------------------------------------------------------------------------------------------------
+
+** A BUNCH OF LOG OUTPUT HAPPENED AROUND THE TIME I WAS DOING THE ABOVE. ON A GLANCE IT LOOKS HOUSEKEEPING OR OVERHEAD
+RELATED TO GENERAL OPS. MAYBE TRIGGERED BY CONSUMING WHICH WAS THE RECENT MAJOR NEW ACTION.
+
+kafka      | [2022-11-18 17:53:16,736] INFO Creating topic __consumer_offsets with configuration {compression.type=producer, cleanup.policy=compact, segment.bytes=104857600} and initial partition assignment HashMap(0 -> ArrayBuffer(1002), 1 -> ArrayBuffer(1002), 2 -> ArrayBuffer(1002), 3 -> ArrayBuffer(1002), 4 -> ArrayBuffer(1002), 5 -> ArrayBuffer(1002), 6 -> ArrayBuffer(1002), 7 -> ArrayBuffer(1002), 8 -> ArrayBuffer(1002), 9 -> ArrayBuffer(1002), 10 -> ArrayBuffer(1002), 11 -> ArrayBuffer(1002), 12 -> ArrayBuffer(1002), 13 -> ArrayBuffer(1002), 14 -> ArrayBuffer(1002), 15 -> ArrayBuffer(1002), 16 -> ArrayBuffer(1002), 17 -> ArrayBuffer(1002), 18 -> ArrayBuffer(1002), 19 -> ArrayBuffer(1002), 20 -> ArrayBuffer(1002), 21 -> ArrayBuffer(1002), 22 -> ArrayBuffer(1002), 23 -> ArrayBuffer(1002), 24 -> ArrayBuffer(1002), 25 -> ArrayBuffer(1002), 26 -> ArrayBuffer(1002), 27 -> ArrayBuffer(1002), 28 -> ArrayBuffer(1002), 29 -> ArrayBuffer(1002), 30 -> ArrayBuffer(1002), 31 -> ArrayBuffer(1002), 32 -> ArrayBuffer(1002), 33 -> ArrayBuffer(1002), 34 -> ArrayBuffer(1002), 35 -> ArrayBuffer(1002), 36 -> ArrayBuffer(1002), 37 -> ArrayBuffer(1002), 38 -> ArrayBuffer(1002), 39 -> ArrayBuffer(1002), 40 -> ArrayBuffer(1002), 41 -> ArrayBuffer(1002), 42 -> ArrayBuffer(1002), 43 -> ArrayBuffer(1002), 44 -> ArrayBuffer(1002), 45 -> ArrayBuffer(1002), 46 -> ArrayBuffer(1002), 47 -> ArrayBuffer(1002), 48 -> ArrayBuffer(1002), 49 -> ArrayBuffer(1002)) (kafka.zk.AdminZkClient)
+zookeeper  | 2022-11-18 17:53:16,756 [myid:] - INFO  [ProcessThread(sid:0 cport:2181)::PrepRequestProcessor@653] - Got user-level KeeperException when processing sessionid:0x1002e9b07bc0000 type:setData cxid:0x44 zxid:0x43 txntype:-1 reqpath:n/a Error Path:/config/topics/__consumer_offsets Error:KeeperErrorCode = NoNode for /config/topics/__consumer_offsets
+kafka      | [2022-11-18 17:53:17,421] INFO [ReplicaFetcherManager on broker 1002] Removed fetcher for partitions HashSet(__consumer_offsets-22, __consumer_offsets-30, __consumer_offsets-25, __consumer_offsets-35, __consumer_offsets-37, __consumer_offsets-38, __consumer_offsets-13, __consumer_offsets-8, __consumer_offsets-21, __consumer_offsets-4, __consumer_offsets-27, __consumer_offsets-7, __consumer_offsets-9, __consumer_offsets-46, __consumer_offsets-41, __consumer_offsets-33, __consumer_offsets-23, __consumer_offsets-49, __consumer_offsets-47, __consumer_offsets-16, __consumer_offsets-28, __consumer_offsets-31, __consumer_offsets-36, __consumer_offsets-42, __consumer_offsets-3, __consumer_offsets-18, __consumer_offsets-15, __consumer_offsets-24, __consumer_offsets-17, __consumer_offsets-48, __consumer_offsets-19, __consumer_offsets-11, __consumer_offsets-2, __consumer_offsets-43, __consumer_offsets-6, __consumer_offsets-14, __consumer_offsets-20, __consumer_offsets-0, __consumer_offsets-44, __consumer_offsets-39, __consumer_offsets-12, __consumer_offsets-45, __consumer_offsets-1, __consumer_offsets-5, __consumer_offsets-26, __consumer_offsets-29, __consumer_offsets-34, __consumer_offsets-10, __consumer_offsets-32, __consumer_offsets-40) (kafka.server.ReplicaFetcherManager)
+kafka      | [2022-11-18 17:53:17,438] INFO [Log partition=__consumer_offsets-3, dir=/kafka/kafka-logs-d5512714b91f] Loading producer state till offset 0 with message format version 2 (kafka.log.Log)
+kafka      | [2022-11-18 17:53:17,449] INFO Created log for partition __consumer_offsets-3 in /kafka/kafka-logs-d5512714b91f/__consumer_offsets-3 with properties {cleanup.policy=compact, compression.type="producer", segment.bytes=104857600} (kafka.log.LogManager)
+kafka      | [2022-11-18 17:53:17,451] INFO [Partition __consumer_offsets-3 broker=1002] No checkpointed highwatermark is found for partition __consumer_offsets-3 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:17,453] INFO [Partition __consumer_offsets-3 broker=1002] Log loaded for partition __consumer_offsets-3 with initial high watermark 0 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:17,466] INFO [Log partition=__consumer_offsets-18, dir=/kafka/kafka-logs-d5512714b91f] Loading producer state till offset 0 with message format version 2 (kafka.log.Log)
+80 OR 100 OR MORE OF THESE
+
+
+kafka      | [2022-11-18 17:53:18,497] INFO Created log for partition __consumer_offsets-13 in /kafka/kafka-logs-d5512714b91f/__consumer_offsets-13 with properties {cleanup.policy=compact, compression.type="producer", segment.bytes=104857600} (kafka.log.LogManager)
+kafka      | [2022-11-18 17:53:18,497] INFO [Partition __consumer_offsets-13 broker=1002] No checkpointed highwatermark is found for partition __consumer_offsets-13 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:18,497] INFO [Partition __consumer_offsets-13 broker=1002] Log loaded for partition __consumer_offsets-13 with initial high watermark 0 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:18,504] INFO [Log partition=__consumer_offsets-28, dir=/kafka/kafka-logs-d5512714b91f] Loading producer state till offset 0 with message format version 2 (kafka.log.Log)
+kafka      | [2022-11-18 17:53:18,506] INFO Created log for partition __consumer_offsets-28 in /kafka/kafka-logs-d5512714b91f/__consumer_offsets-28 with properties {cleanup.policy=compact, compression.type="producer", segment.bytes=104857600} (kafka.log.LogManager)
+kafka      | [2022-11-18 17:53:18,507] INFO [Partition __consumer_offsets-28 broker=1002] No checkpointed highwatermark is found for partition __consumer_offsets-28 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:18,507] INFO [Partition __consumer_offsets-28 broker=1002] Log loaded for partition __consumer_offsets-28 with initial high watermark 0 (kafka.cluster.Partition)
+kafka      | [2022-11-18 17:53:18,520] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 3 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,524] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-3 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,527] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 18 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,527] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-18 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,528] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 41 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,528] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-41 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,529] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 10 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,529] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-10 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+80 OR 100 MORE OF THESE
+kafka      | [2022-11-18 17:53:18,558] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-6 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,558] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 43 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,558] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-43 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,559] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 13 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,559] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-13 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,559] INFO [GroupCoordinator 1002]: Elected as the group coordinator for partition 28 in epoch 0 (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,559] INFO [GroupMetadataManager brokerId=1002] Scheduling loading of offsets and group metadata from __consumer_offsets-28 for epoch 0 (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,620] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-3 in 94 milliseconds for epoch 0, of which 24 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,626] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-18 in 99 milliseconds for epoch 0, of which 98 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,626] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-41 in 98 milliseconds for epoch 0, of which 98 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,633] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-10 in 104 milliseconds for epoch 0, of which 98 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,634] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-33 in 104 milliseconds for epoch 0, of which 103 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,635] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-48 in 103 milliseconds for epoch 0, of which 102 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,636] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-19 in 104 milliseconds for epoch 0, of which 103 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,637] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-34 in 104 milliseconds for epoch 0, of which 103 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+80 OR 100 MORE
+kafka      | [2022-11-18 17:53:18,687] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-6 in 129 milliseconds for epoch 0, of which 129 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,688] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-43 in 130 milliseconds for epoch 0, of which 129 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,689] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-13 in 130 milliseconds for epoch 0, of which 129 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,690] INFO [GroupMetadataManager brokerId=1002] Finished loading offsets and group metadata from __consumer_offsets-28 in 131 milliseconds for epoch 0, of which 131 milliseconds was spent in the scheduler. (kafka.coordinator.group.GroupMetadataManager)
+kafka      | [2022-11-18 17:53:18,795] INFO [GroupCoordinator 1002]: Preparing to rebalance group console-consumer-1053 in state PreparingRebalance with old generation 0 (__consumer_offsets-48) (reason: Adding new member consumer-console-consumer-1053-1-3daf2aa0-977f-4eaf-a52a-c2e74f04230c with group instance id None) (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,820] INFO [GroupCoordinator 1002]: Stabilized group console-consumer-1053 generation 1 (__consumer_offsets-48) with 1 members (kafka.coordinator.group.GroupCoordinator)
+kafka      | [2022-11-18 17:53:18,849] INFO [GroupCoordinator 1002]: Assignment received from leader for group console-consumer-1053 for generation 1. The group has 1 members, 0 of which are static. (kafka.coordinator.group.GroupCoordinator)
+zookeeper  | 2022-11-18 17:59:50,926 [myid:] - INFO  [PurgeTask:DatadirCleanupManager$PurgeTask@138] - Purge task started.
+zookeeper  | 2022-11-18 17:59:50,929 [myid:] - INFO  [PurgeTask:DatadirCleanupManager$PurgeTask@144] - Purge task completed.
+
+----------------------------------------------------------------------------------------------------------------------
+
+********************** I NOTICED THE TOPIC AND DATA PERSISTS ACROSS RUNS OF CONTAINER BUT COMPOSE HAS NO
+VOLUMES SO DOCKERFILE MUST SPECIFY A VOLUME BUT NOT CONFIRMED. IT IS IMPLIED. DATA PERSISTS AND I SEE ANONYMOUS
+VOLUMES WITH TIMESTAMPS CORRESPONDING TO KAFKA CONTAINER STARTUP.
+
+------------------------------------------------------------------------------------------------------
+
+THIS MIGHT PERSIST ON MY EC2 AS WELL. MIGHT PERSIST UNTIL A DOCKER PRUNE OF VOLUMES. THIS MEANS WE NEED A SOLID WAY
+TO EASILY RE-INIT ALL KAFKA DATA AND THEN FOR OTHER OPS, A WAY TO STORE IT EVEN ACCROSS NEW VMS. ACTUALLY MY
+EC2 STORAGE MIGHT DO THAT ALREADY.
+
+-------------------------------------------
+
 

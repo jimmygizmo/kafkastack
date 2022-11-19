@@ -1,0 +1,7 @@
+
+// Ignore any IDE warning telling you to add 'kafka' here. I just turn off the requirements inspection.
+// Do not install "kafka" in this VM.
+// Even though the package is named "kafka-python", you import like "import kafka".
+
+kafka-python
+

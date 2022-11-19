@@ -1,0 +1,48 @@
+
+
+docker-compose up
+
+➜  ~ docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED        STATUS          PORTS                                                NAMES
+d5512714b91f   wurstmeister/kafka       "start-kafka.sh"         10 hours ago   Up 32 seconds   0.0.0.0:9092->9092/tcp                               kafka
+bd887f02aa01   wurstmeister/zookeeper   "/bin/sh -c '/usr/sb…"   10 hours ago   Up 31 seconds   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   zookeeper
+➜  ~
+➜  ~
+➜  ~ docker exec -it d5512714b91f bash
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-topics.sh --create --topic employees --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-topics.sh --describe --topic employees --zookeeper zookeeper
+Topic: employees	TopicId: kpIoablAQyifPKN9_Wtclw	PartitionCount: 1	ReplicationFactor: 1	Configs:
+	Topic: employees	Partition: 0	Leader: 1002	Replicas: 1002	Isr: 1002
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper
+employees
+
+root@d5512714b91f:/# /opt/kafka/bin//kafka-console-producer.sh --topic employees --bootstrap-server localhost:9092
+** EACH LINE TYPED BECOMES A NEW MESSAGE ON THE TOPIC UNTIL CTRL-D OR CTRL-C **
+
+------------------------------------------
+CONSUMING TEST MESSAGES AND ALSO THOSE PUBLISHED BY RUNNING publish.py:
+
+root@d5512714b91f:/# /opt/kafka/bin/kafka-console-consumer.sh --topic employees --from-beginning --bootstrap-server localhost:9092
+Hi.
+There.
+This is message like number 4 or something. Maybe 5.
+more
+B
+BB
+BBBBBBB
+awdawd
+rtyretyr
+tyjktytyk
+wertuyu
+{"name": "John Smith", "id": 1}
+{"name": "Susan Doe", "id": 2}
+{"name": "Karen Rock", "id": 3}
+{"name": "John Smith", "id": 1}
+{"name": "Susan Doe", "id": 2}
+{"name": "Karen Rock", "id": 3}
+
+-------------------------------------------------------------------------------------------------------------------
+
