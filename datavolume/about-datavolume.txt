@@ -1,0 +1,25 @@
+Kafkapoc /datavolume/ directory
+============================
+
+This /datavolume/ directory is here as a placeholder and will be used to store any kind of data for persistence
+and isolation from the application itself as well as for data to be shared across containers.
+
+This about file (/datavolume/about-datavolume.txt) is present so git will store this placeholder directory
+because git will not store an empty directory. It is good to have such a directory in place in the
+project repository for clarity, simplicity of setup, code simplicity and other benefits.
+
+PLEASE NOTE:
+The .gitignore file in the root of this project has important entries in place so that this about file
+and the directory itself are stored in the repository,
+but nothing else inside the directory will be added to git.
+
+This /datavolume/ directory is intended to only hold temporary runtime data, specifically general purpose data
+of the local running instance, whether it is your development instance on your laptop
+or your cloud VM instance, where you will mount this directory to some kind of backed-up, persistent volume,
+so that if your VM goes away or in whatever scenario, your general application runtime/instance data and
+cross-container-shared data will remain in place and in good condition.
+
+This project has similar directories (and mapped volumes, some with subdirs mapped):
+/kafkavolume/
+/zoovolume/data/
+

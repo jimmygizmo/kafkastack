@@ -4,6 +4,12 @@ networks:
   kafkapoc-network:
 
 volumes:
+  datavolume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./datavolume
   # EXAMPLE of mapping another subdir. Each subdir is done with its own volume alias.
 #  zoovolumefoo:
 #    driver: local
@@ -46,6 +52,10 @@ services:
     image: wurstmeister/kafka
     container_name: kafkapoc-kafka
 #    build: ./kafka  # Future custom build, Dockerfile
+# WHAT DEPENDS ON WHAT FIRST? zookeeper or kafka??
+# I think ZooKeeper has to be up first.
+#    depends_on:
+#      - kafkapoc-zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ZOOKEEPER_CONNECT: kafkapoc-zookeeper:2181
@@ -55,6 +65,37 @@ services:
       - "9092:9092"
     volumes:
       - kafkavolume:/kafka
+
+
+  # ---- NODE KAFKA CLIENT ----
+  kafkapoc-node:
+    container_name: kafkapoc-node
+    build: ./node
+    depends_on:
+      - kafkapoc-kafka
+    #    SETUP: To use a full repository URL image name, customize a URL like the one here:
+    #    image: <YOUR-AWS-USER-ID-NUMBER>.dkr.ecr.us-west-2.amazonaws.com/<YOUR-AWS-REPO-NAME>:kafkapoc-kafka
+    image: kafkapoc-node
+#    environment:
+#      KAFKA_ADVERTISED_HOST_NAME: localhost
+#      KAFKA_ZOOKEEPER_CONNECT: kafkapoc-zookeeper:2181
+    networks:
+      - kafkapoc-network
+# Later we may have a port listening for WS connections from the react app. Proposed: 44555
+#    ports:
+#      - "44555:44555"
+    volumes:
+      - datavolume:/app/datavolume
+    # wait-for-it.sh must target the internal port number, not the external
+    command: [
+      "/app/wait-for-it.sh",
+      "--host=kafkapoc-kafka",
+      "--port=9092",
+      "--timeout=20",
+      "--",
+      "/usr/local/bin/node",
+      "/app/src/index.js",
+    ]
 
 
 ######################################################################################################################

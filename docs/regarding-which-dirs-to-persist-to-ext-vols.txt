@@ -1,3 +1,10 @@
 
+UPDATE: This is still an open topic and I have only looked briefly at what dirs obviouly
+contain changing runtime data. I've only mapped one from each container; the most obvious
+ones. TODO: Fully research and analyze what dirs we really need to map for full persistence,
+correct operation and good configuration. Mapping volumes seems like a way config can be
+handled but I will first opt for copying config files in.
+
+
 https://stackoverflow.com/questions/61002881/docker-compose-doesnt-save-data-in-volume
 

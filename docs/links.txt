@@ -9,7 +9,9 @@ git@github.com:jimmygizmo/kafkapoc.git
 kafka/docker
 https://towardsdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way-4ceb00817d8b
 
+If there is an idea to put Apollo in front of Kafka, the following article shows why the
+two concepts are somewhat incompatible (GraphQL and Kafka, that is.)
+https://www.confluent.io/blog/intro-to-graphql-an-api-for-kafka-data/
 
-
-
+This came up while considering how to approach clients for React etc.
 

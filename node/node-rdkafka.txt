@@ -1,0 +1,11 @@
+I don't think this is the only node client lib I can use.
+https://github.com/Blizzard/node-rdkafka
+
+But it is linked to from the official Confluent site, so maybe it is the one to use ?!?
+https://developer.confluent.io/get-started/nodejs/#create-project
+
+This lib has instructions for special compiler settings for Mac, but of course the real
+build for deployment will be done in the Node container.
+Or maybe this will ONLY get built in the node container, so the Mac stuff is irrellevant.
+I suppose there is some dev server (non-docker) approach but I'm not trying to do that right now.
+

@@ -1,4 +1,7 @@
 
+node_modules/
+
+
 # For the following handful of about files, we keep the directory and the about file in place,
 # but ignore everything else. It is the about file itself that causes git to store the directory.
 # Git will not store an empty directory by itself. All of the following directories we do want to

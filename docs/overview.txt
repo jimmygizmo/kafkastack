@@ -1,3 +1,7 @@
+These are some nice descriptions/definitions taken from the following article:
+https://towardsdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way-4ceb00817d8b
+
+
 Kafka — Basically an event streaming platform. It enables users to collect, store,
   and process data to build real-time event-driven applications. It’s written in
   Java and Scala, but you don’t have to know these to work with Kafka. There’s
