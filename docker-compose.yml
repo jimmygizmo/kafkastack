@@ -1,17 +1,57 @@
 version: '3'
 
+networks:
+  kafkapoc-network:
+
+volumes:
+  zoovolume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./zoovolume
+  kafkavolume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./kafkavolume
+
 services:
-  zookeeper:
+
+
+  # ---- ZOOKEEPER ----
+  kafkapoc-zookeeper:
     image: wurstmeister/zookeeper
-    container_name: zookeeper
+    container_name: kafkapoc-zookeeper
+#    build: ./zookeeper  # Future custom build, Dockerfile
+    networks:
+      - kafkapoc-network
     ports:
       - "2181:2181"
-  kafka:
+    volumes:
+      - zoovolume:/opt/zookeeper-3.4.13/data
+
+
+  # ---- KAFKA ----
+  kafkapoc-kafka:
     image: wurstmeister/kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
+    container_name: kafkapoc-kafka
+#    build: ./kafka  # Future custom build, Dockerfile
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: kafkapoc-zookeeper:2181
+    networks:
+      - kafkapoc-network
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafkavolume:/kafka
+
+
+######################################################################################################################
+
+
+# https://hub.docker.com/r/wurstmeister/kafka
+# https://hub.docker.com/r/wurstmeister/zookeeper/
 

@@ -1,0 +1,105 @@
+(ve.kafkapoc) ➜  kafkapoc git:(main) ✗ docker-compose exec -it kafkapoc-zookeeper bash
+root@cb91d7224c35:/opt/zookeeper-3.4.13# ls -alt
+total 1664
+drwxr-xr-x  2  501 staff    4096 Feb  7 04:43 conf
+drwxr-xr-x  3 root root     4096 Feb  7 04:33 data
+drwxr-xr-x  1  501 staff    4096 Jan 19  2019 .
+drwxr-xr-x  2  501 staff    4096 Jan 19  2019 bin
+drwxr-xr-x  2  501 staff    4096 Jan 19  2019 dist-maven
+drwxr-xr-x  6  501 staff    4096 Jan 19  2019 docs
+drwxr-xr-x 10  501 staff    4096 Jan 19  2019 contrib
+drwxr-xr-x  4  501 staff    4096 Jan 19  2019 lib
+drwxr-xr-x  5  501 staff    4096 Jan 19  2019 recipes
+drwxr-xr-x  1 root root     4096 Jan 19  2019 ..
+-rw-r--r--  1  501 staff     833 Jun 30  2018 zookeeper-3.4.13.jar.asc
+-rw-r--r--  1  501 staff 1508639 Jun 29  2018 zookeeper-3.4.13.jar
+-rw-r--r--  1  501 staff      33 Jun 29  2018 zookeeper-3.4.13.jar.md5
+-rw-r--r--  1  501 staff      41 Jun 29  2018 zookeeper-3.4.13.jar.sha1
+drwxr-xr-x  8  501 staff    4096 Jun 29  2018 src
+-rw-r--r--  1  501 staff   11938 Jun 29  2018 LICENSE.txt
+-rw-r--r--  1  501 staff    3132 Jun 29  2018 NOTICE.txt
+-rw-r--r--  1  501 staff    1585 Jun 29  2018 README.md
+-rw-r--r--  1  501 staff    1770 Jun 29  2018 README_packaging.txt
+-rw-r--r--  1  501 staff   91400 Jun 29  2018 build.xml
+-rw-r--r--  1  501 staff    8502 Jun 29  2018 ivy.xml
+-rw-r--r--  1  501 staff    1709 Jun 29  2018 ivysettings.xml
+
+------------------------------------------------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# ls -alt conf
+total 20
+drwxr-xr-x 2 501 staff 4096 Feb  7 04:43 .
+-rw-r--r-- 1 501 staff  932 Feb  7 04:43 zoo.cfg
+-rw-r--r-- 1 501 staff 2160 Feb  7 04:43 log4j.properties
+drwxr-xr-x 1 501 staff 4096 Jan 19  2019 ..
+-rw-r--r-- 1 501 staff  535 Jun 29  2018 configuration.xsl
+
+---------------------------------------------------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# ls -alt data
+total 12
+drwxr-xr-x 2 root root  4096 Feb  7 04:43 version-2
+drwxr-xr-x 3 root root  4096 Feb  7 04:33 .
+drwxr-xr-x 1  501 staff 4096 Jan 19  2019 ..
+
+---------------------------------------------------------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# ls -alt data/version-2/
+total 24
+-rw-r--r-- 1 root root 67108880 Feb  7 04:43 log.21
+drwxr-xr-x 2 root root     4096 Feb  7 04:43 .
+-rw-r--r-- 1 root root 67108880 Feb  7 04:42 log.1
+drwxr-xr-x 3 root root     4096 Feb  7 04:33 ..
+root@cb91d7224c35:/opt/zookeeper-3.4.13#
+----------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# uname -a
+Linux cb91d7224c35 5.15.49-linuxkit #1 SMP Tue Sep 13 07:51:46 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+root@cb91d7224c35:/opt/zookeeper-3.4.13# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          32G  2.8G   27G  10% /
+tmpfs            64M     0   64M   0% /dev
+shm              64M     0   64M   0% /dev/shm
+/dev/vda1        32G  2.8G   27G  10% /etc/hosts
+tmpfs           3.9G     0  3.9G   0% /proc/acpi
+tmpfs            64M     0   64M   0% /proc/kcore
+tmpfs            64M     0   64M   0% /proc/keys
+tmpfs            64M     0   64M   0% /proc/timer_list
+tmpfs           3.9G     0  3.9G   0% /sys/firmware
+root@cb91d7224c35:/opt/zookeeper-3.4.13#
+
+-------------------------------------------------------------------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# env
+HOSTNAME=cb91d7224c35
+TERM=xterm
+ZK_HOME=/opt/zookeeper-3.4.13
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/opt/zookeeper-3.4.13
+JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+SHLVL=1
+HOME=/root
+LESSOPEN=| /usr/bin/lesspipe %s
+ZOOKEEPER_VERSION=3.4.13
+LESSCLOSE=/usr/bin/lesspipe %s %s
+_=/usr/bin/env
+root@cb91d7224c35:/opt/zookeeper-3.4.13#
+
+------------------------------------------------------------------------------------------
+
+root@cb91d7224c35:/opt/zookeeper-3.4.13# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0   4456   776 ?        Ss   04:43   0:00 /bin/sh -c /usr/sbin/sshd && bash /usr/bin/start-zk.s
+root         8  0.0  0.0  61376  3112 ?        Ss   04:43   0:00 /usr/sbin/sshd
+root         9  0.0  0.0  17972  2788 ?        S    04:43   0:00 bash /usr/bin/start-zk.sh
+root        12  0.3  1.1 3724876 92768 ?       Sl   04:43   0:03 /usr/lib/jvm/java-7-openjdk-amd64/bin/java -Dzookeepe
+root        40  0.0  0.0  18188  3304 pts/0    Ss   04:53   0:00 bash
+root        67  0.0  0.0  15580  2168 pts/0    R+   04:56   0:00 ps aux
+
+-------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------------------------
+

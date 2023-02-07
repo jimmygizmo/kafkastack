@@ -1,0 +1,8 @@
+
+This directory (/zoovolume/) is kept in the repository with the help of this about file.
+The .gitignore file of this project will prevent any other contents of this directory
+from being added to git.
+
+This directory holds the data of the local instance of zookeeper, none of which should
+be added to this repository.
+
