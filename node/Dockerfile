@@ -35,6 +35,13 @@ RUN npm i
 #   This is not the same behavior as a linux or macos cp command.
 COPY ./src/. /app/src/
 
+# Special tests with .env
+# ** Dotenv could not find the .env file when it was getting put in /src/ next to the code!
+# ** Maybe Dotenv always starts looking in the parent dir?! Maybe only if it is in a /src/ dir?!
+# RESULT: IT WORKED! Conclusion: Carefully put the .env exactly in place and in the parent dir of a /src/
+# or just generally in the parent dir of the source code calling dotenv loading. (I guess.)
+COPY ./.env /app/
+
 
 # /datavolume for general sharing
 RUN mkdir /app/datavolume

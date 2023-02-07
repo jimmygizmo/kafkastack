@@ -1,0 +1,23 @@
+Just a quick test.
+
+The dotenv module is a little weired somtimes and I felt like doing a quick test.
+Now, in a container I would set env in other ways, but I just want to see a .env file
+get picked up and used inside a container. It might give me ideas and I like to see dotenv working.
+I've had too many times where dotenv was toublesome .. but I was probably doing something too fast
+and did it wrong. Let's see how it does here.
+
+UPDATE:
+Glad I tested it. First try did not work.
+
+Error: ENOENT: no such file or directory, open '/app/.env'
+
+
+----------------------------------
+SOLUTION NOTED IN Dockerfile:
+# Special tests with .env
+# ** Dotenv could not find the .env file when it was getting put in /src/ next to the code!
+# ** Maybe Dotenv always starts looking in the parent dir?! Maybe only if it is in a /src/ dir?!
+# RESULT: IT WORKED! Conclusion: Carefully put the .env exactly in place and in the parent dir of a /src/
+# or just generally in the parent dir of the source code calling dotenv loading. (I guess.)
+COPY ./.env /app/
+
