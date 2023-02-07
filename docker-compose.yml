@@ -4,12 +4,19 @@ networks:
   kafkapoc-network:
 
 volumes:
-  zoovolume:
+  # EXAMPLE of mapping another subdir. Each subdir is done with its own volume alias.
+#  zoovolumefoo:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: ./zoovolume/foo
+  zoovolumedata:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./zoovolume
+      device: ./zoovolume/data
   kafkavolume:
     driver: local
     driver_opts:
@@ -30,7 +37,8 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - zoovolume:/opt/zookeeper-3.4.13/data
+#      - zoovolumeconf:/opt/zookeeper-3.4.13/foo  # EXAMPLE. See comments above near volumes.
+      - zoovolumedata:/opt/zookeeper-3.4.13/data
 
 
   # ---- KAFKA ----

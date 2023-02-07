@@ -6,3 +6,68 @@ from being added to git.
 This directory holds the data of the local instance of zookeeper, none of which should
 be added to this repository.
 
+UPDATE:
+There is now a subdirectory mapped independently from inside zookeeper to outide and a disabled example of how
+to do another subdir as well
+These have placeholder files in them which keep the directories in git like this
+about file does for its own directory. There are also corresponding .gitignore entries
+to keep the individual contents out of the repository.
+
+/zoovolume/data
+/zoovolume/data/data-placeholder.txt
+
+/zoovolume/foo
+/zoovolume/foo/foo-placeholder.txt
+
+The .gitignore entries for everything described in this about file are:
+
+------------------------------------
+
+# kafkavolume and zoovolume
+kafkavolume/*
+!kafkavolume/about-kafkavolume.txt
+zoovolume/*
+!zoovolume/about-zoovolume.txt
+
+!zoovolume/data
+zoovolume/data/*
+!zoovolume/data/data-placeholder.txt
+
+!zoovolume/foo
+zoovolume/foo/*
+!zoovolume/foo/foo-placeholder.txt
+
+------------------------------------
+
+All of the corresponding docker-compose entries are these:
+
+
+volumes:
+  zoovolumefoo:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./zoovolume/foo
+  zoovolumedata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./zoovolume/data
+  kafkavolume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./kafkavolume
+
+...
+    volumes:
+      - zoovolumeconf:/opt/zookeeper-3.4.13/foo
+      - zoovolumedata:/opt/zookeeper-3.4.13/data
+
+...
+    volumes:
+      - kafkavolume:/kafka
+

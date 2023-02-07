@@ -12,6 +12,14 @@ kafkavolume/*
 zoovolume/*
 !zoovolume/about-zoovolume.txt
 
+!zoovolume/data
+zoovolume/data/*
+!zoovolume/data/data-placeholder.txt
+
+#!zoovolume/foo
+#zoovolume/foo/*
+#!zoovolume/foo/foo-placeholder.txt
+
 
 .idea
 .DS_*
