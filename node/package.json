@@ -12,6 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "kafka-node": "^5.0.0"
+    "kafkajs": "^2.2.3"
   }
 }

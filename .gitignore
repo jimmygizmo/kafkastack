@@ -1,6 +1,9 @@
 
 node_modules/
 
+# todo/ is just random in-progress stuff that's a little too unkempt or irrellevant for the repo.
+todo/
+
 
 # For the following handful of about files, we keep the directory and the about file in place,
 # but ignore everything else. It is the about file itself that causes git to store the directory.

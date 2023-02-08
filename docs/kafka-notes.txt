@@ -1,0 +1,60 @@
+
+** BELOW HERE IS GOOD GUESSWORK AND RESEARCH, BUT LET'S SKIP DOWN TO FOCUS ON THIS ERROR. JUMP DOWN A PAGE OR TWO.
+ERROR: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
+
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+
+This article definitely seems relevant, if not to my issue, definitely essential info:
+https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+
+----------------------------------------------------------------------------------------------------------------------
+
+I hit some issue with brokers and unique addrs:ports and kafka shutting down.
+It started when I was just getting consumer and producer working together, so I think the problem
+was triggered by Kafka trying to spawn new broker instances or something?! I'm wildly guessing
+based on limited info.
+
+https://stackoverflow.com/questions/53944271/kafka-docker-container-scaling-failed-for-wurstmeister-with-error-as-advertised
+
+I fixed a command suggested in this thread (which ..almost.. worked) to get hostname from docker:
+[ec2-user@ip-172-31-5-200 ~]$ docker info | grep Name: | cut -d' ' -f 3
+ip-172-31-5-200.us-west-2.compute.internal
+[ec2-user@ip-172-31-5-200 ~]$
+
+That was my EC2^^
+
+So I will need to try some mods to docker compose ENV for Kafka:
+
+----------------------------------------------------------------------------------------------------------------------
+
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep Name: | cut -d' ' -f 3"
+      KAFKA_ZOOKEEPER_CONNECT: kafkapoc-zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: "order:5:2"
+
+There is a lot of important config here and I have not tried it and will need to understand these settings.
+I'll research a bit more before just trying this.
+
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+Lets focus on this:
+
+ERROR: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
+
+MORE DETAIL:
+kafkapoc-kafka      | [2023-02-08 02:27:55,693] ERROR [KafkaServer id=1002] Fatal error during KafkaServer startup. Prepare to shutdown (kafka.server.KafkaServer)
+kafkapoc-kafka      | java.lang.IllegalArgumentException: requirement failed: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
+
+A. Server ID 1002 Crashes, because the port it wants is taken by server ID 1001. That port is 9092.
+
+* So the solution is?
+1. Force use of a single sandbox server?
+2. Have automatic server(broker) spawning pick a preset/good sequence of ports (preset or properly automatic?)
+** I've heard of an issue like this and the above configs from related articles look related to this idea.
+
+

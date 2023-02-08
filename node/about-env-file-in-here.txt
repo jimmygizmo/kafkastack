@@ -1,4 +1,7 @@
 Just a quick test.
+** There is not a plan to have a .env file copied into containers. I just needed to test a few
+things and was curious about others.
+The eventual plan for configuration will be gobal to the stack and external and automatic, generally speaking.
 
 The dotenv module is a little weired somtimes and I felt like doing a quick test.
 Now, in a container I would set env in other ways, but I just want to see a .env file

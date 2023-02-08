@@ -1,8 +1,13 @@
-import kafka, from "kafka-node";
-
-// The .js extension is required on the following imports:
-import * as Config from "./config.js";
+import runProducer from "./producerBasic.js";
+import runConsumer from "./consumerBasic.js";
 
 
-// https://www.npmjs.com/package/kafka-node
+runProducer().catch(
+  (err) => { console.error("ERROR: Producer: ", err) }
+);
+
+
+runConsumer().catch(
+  (err) => { console.error("ERROR: Consumer: ", err) }
+);
 

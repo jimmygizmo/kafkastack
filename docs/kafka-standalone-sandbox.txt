@@ -1,0 +1,14 @@
+
+-----------------------------------------------------
+This article is very messy and uses techniques I won't but it might have some relevant info buried in there:
+https://medium.com/@garry.passarella/creating-a-kafka-sandbox-in-docker-c8d122afab36
+
+----------------------------------------------------------------
+
+**** This repo and the dockerfile look promising:
+https://github.com/navikt/kafka-sandbox
+
+
+
+
+

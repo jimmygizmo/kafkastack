@@ -94,12 +94,13 @@ services:
       "--timeout=20",
       "--",
       "/usr/local/bin/node",
-      "/app/src/producerBasic.js",
+      "/app/src/index.js",
     ]
 
 # Entrypoint command options:
 # /app/src/index.js
 # /app/src/producerBasic.js
+# /app/src/consumerBasic.js
 
 
 ######################################################################################################################
