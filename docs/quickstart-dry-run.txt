@@ -2,7 +2,7 @@
 
 CREATE FIRST TOPIC ON localhost:9092
 -------------------------------
-(ve.kafkapoc) ➜  kafkapoc git:(main) ✗ docker-compose exec -it kafkapoc-kafka bash
+(ve.kafkastack) ➜  kafkastack git:(main) ✗ docker-compose exec -it kafkastack-kafka bash
 root@e49040c7b402:/# /opt/kafka/bin/kafka-topics.sh --create --topic employees --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
 Created topic employees.
 root@e49040c7b402:/#
@@ -10,8 +10,8 @@ root@e49040c7b402:/#
 
 --------------------------------
 # NOTE: The quick start refers to the old hostname at the end of the command of "zookeeper".
-TODO: Update the quick start. But it did work fine with the new hostname "kafkapoc-zookeeper"
-root@e49040c7b402:/# /opt/kafka/bin/kafka-topics.sh --describe --topic employees --zookeeper kafkapoc-zookeeper
+TODO: Update the quick start. But it did work fine with the new hostname "kafkastack-zookeeper"
+root@e49040c7b402:/# /opt/kafka/bin/kafka-topics.sh --describe --topic employees --zookeeper kafkastack-zookeeper
 Topic: employees	TopicId: snUr2fVXRQm4A6KDgrv6ug	PartitionCount: 1	ReplicationFactor: 1	Configs:
 	Topic: employees	Partition: 0	Leader: 1001	Replicas: 1001	Isr: 1001
 root@e49040c7b402:/#
@@ -19,7 +19,7 @@ root@e49040c7b402:/#
 
 ----------------------------------
 
-root@e49040c7b402://opt/kafka/bin/kafka-topics.sh --list --zookeeper kafkapoc-zookeeper
+root@e49040c7b402://opt/kafka/bin/kafka-topics.sh --list --zookeeper kafkastack-zookeeper
 employees
 root@e49040c7b402:/#
 
@@ -28,7 +28,7 @@ root@e49040c7b402:/#
 EXECUTION OF publish.py RAN PERFECTLY - THIS IS THE OUTPUT FROM RUNNING publish.py IN THE IDE:
 See below for the output from the consumer who received these messages.
 
-/Users/bilbo/.pyenv/versions/ve.kafkapoc/bin/python /Users/bilbo/GITREPOS/kafkapoc/publish.py
+/Users/bilbo/.pyenv/versions/ve.kafkastack/bin/python /Users/bilbo/GITREPOS/kafkastack/publish.py
 <class 'int'> : <class 'str'>
 1 : {"name": "John Smith", "id": 1}
 Message published successfully.

@@ -30,7 +30,7 @@ So I will need to try some mods to docker compose ENV for Kafka:
 
     environment:
       HOSTNAME_COMMAND: "docker info | grep Name: | cut -d' ' -f 3"
-      KAFKA_ZOOKEEPER_CONNECT: kafkapoc-zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: kafkastack-zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
@@ -47,8 +47,8 @@ Lets focus on this:
 ERROR: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
 
 MORE DETAIL:
-kafkapoc-kafka      | [2023-02-08 02:27:55,693] ERROR [KafkaServer id=1002] Fatal error during KafkaServer startup. Prepare to shutdown (kafka.server.KafkaServer)
-kafkapoc-kafka      | java.lang.IllegalArgumentException: requirement failed: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
+kafkastack-kafka      | [2023-02-08 02:27:55,693] ERROR [KafkaServer id=1002] Fatal error during KafkaServer startup. Prepare to shutdown (kafka.server.KafkaServer)
+kafkastack-kafka      | java.lang.IllegalArgumentException: requirement failed: Configured end points localhost:9092 in advertised listeners are already registered by broker 1001
 
 A. Server ID 1002 Crashes, because the port it wants is taken by server ID 1001. That port is 9092.
 

@@ -18,7 +18,7 @@ export const kfkcServicePort = process.env.KFKC_SERVICE_PORT ||  KFKC_SERVICE_PO
 
 // MONGODB -----------------------------------------------------------------------------------
 
-const KAFKA_SERVICE_HOST_DEFAULT = "kafkapoc-kafka";
+const KAFKA_SERVICE_HOST_DEFAULT = "kafkastack-kafka";
 const KAFKA_SERVICE_PORT_DEFAULT = 9092;
 const KAFKA_SERVICE_DBNAME_DEFAULT = "kafkabrokername";
 const KAFKA_SERVICE_USER_DEFAULT = "kafkauser";

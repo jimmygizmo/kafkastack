@@ -1,4 +1,4 @@
-(ve.kafkapoc) ➜  kafkapoc git:(main) ✗ docker-compose exec -it kafkapoc-zookeeper bash
+(ve.kafkastack) ➜  kafkastack git:(main) ✗ docker-compose exec -it kafkastack-zookeeper bash
 root@cb91d7224c35:/opt/zookeeper-3.4.13# ls -alt
 total 1664
 drwxr-xr-x  2  501 staff    4096 Feb  7 04:43 conf

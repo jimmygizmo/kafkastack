@@ -1,5 +1,5 @@
 Python VE using Pyenv:
 3.11.0
 Name:
-ve.kafkapoc
+ve.kafkastack
 

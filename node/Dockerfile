@@ -1,4 +1,4 @@
-# Kafkapoc -  Kafka Node Client Dockerfile
+# Kafkastack -  Kafka Node Client Dockerfile
 # TODO: put base image size here
 
 FROM node:19.4.0-slim

@@ -1,4 +1,4 @@
-Kafkapoc /datavolume/ directory
+Kafkastack /datavolume/ directory
 ============================
 
 This /datavolume/ directory is here as a placeholder and will be used to store any kind of data for persistence
